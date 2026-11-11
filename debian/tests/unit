@@ -1,0 +1,10 @@
+#!/bin/sh
+# Run the standards tests against the installed server tree.
+set -e
+mcp-server-googleoffice --version
+SRC="$PWD"
+cd "${AUTOPKGTEST_TMP:-/tmp}"
+mkdir -p tests
+cp "$SRC/tests/test_standards.py" tests/
+export PYTHONPATH=/usr/share/mcp-server-googleoffice
+python3 -m pytest -q -p no:cacheprovider tests/test_standards.py

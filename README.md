@@ -47,6 +47,189 @@ By leveraging native OAuth 2.1, stateless deployment capability and external aut
 
 ---
 
+
+## Debian package `mcp-server-googleoffice` (VitexSoftware fork)
+
+This repository is the VitexSoftware fork of
+[taylorwilsdon/google_workspace_mcp](https://github.com/taylorwilsdon/google_workspace_mcp).
+Upstream base: **v2.4.1** (+13 commits, `b5d4323b`), last synced 2026-11-11.
+
+```sh
+apt install mcp-server-googleoffice           # server, /usr/bin/mcp-server-googleoffice
+apt install mcprack-mcp-server-googleoffice   # registers it in the local mcprack catalog
+```
+
+The server is installed under `/usr/share/mcp-server-googleoffice`. The
+launcher `/usr/bin/mcp-server-googleoffice` speaks **stdio** by default and
+supports `--help` and `--version`. The upstream name `workspace-mcp` is kept
+as a compatibility symlink.
+
+The mcprack companion registers the server with `WORKSPACE_MCP_READ_ONLY=true`
+and `MCP_SINGLE_USER_MODE=1`. Admins add the OAuth client as secrets in mcprack.
+
+**Read-only mode** (`WORKSPACE_MCP_READ_ONLY=true`): the server requests only
+read-only Google scopes. In this fork it also drops every tool that is not
+annotated `readOnlyHint=true`. The one exception is `start_google_auth`,
+which is needed to obtain credentials.
+
+### Environment variables
+
+The canonical list is `debian/server.json`, installed as
+`/usr/share/mcp-server-googleoffice/server.json`.
+
+| Variable | Secret | Required | Default | Meaning |
+|---|---|---|---|---|
+| `GOOGLE_OAUTH_CLIENT_ID` | yes | yes | | OAuth 2.0 client ID (Google Cloud console → Credentials) |
+| `GOOGLE_OAUTH_CLIENT_SECRET` | yes | yes | | OAuth 2.0 client secret |
+| `USER_GOOGLE_EMAIL` | no | no | | Default Google account for tool calls |
+| `WORKSPACE_MCP_CREDENTIALS_DIR` | no | no | | Stored OAuth token directory; use a per-user path |
+| `GOOGLE_SERVICE_ACCOUNT_KEY_JSON` | yes | no | | Service-account key for domain-wide delegation |
+| `GOOGLE_SERVICE_ACCOUNT_KEY_FILE` | no | no | | Path to a service-account key file |
+| `DWD_ALLOWED_DOMAINS` | no | no | | Domains the service account may impersonate |
+| `MCP_SINGLE_USER_MODE` | no | no | `1` | Use stored credentials without session mapping |
+| `WORKSPACE_MCP_READ_ONLY` | no | no | `true` | Read-only scopes and tools only |
+| `WORKSPACE_MCP_TRANSPORT` | no | no | `stdio` | `stdio` or `streamable-http` |
+| `WORKSPACE_MCP_TOOLS` | no | no | | Comma-separated services to load |
+| `WORKSPACE_MCP_TOOL_TIER` | no | no | | `core`, `extended` or `complete` |
+| `WORKSPACE_MCP_PERMISSIONS` | no | no | | Granular per-service permissions |
+| `WORKSPACE_MCP_DISABLED_TOOLS` | no | no | | Comma-separated tools to block |
+| `WORKSPACE_ATTACHMENT_DIR` | no | no | | Where downloaded attachments are stored |
+| `GOOGLE_PSE_API_KEY` | yes | no | | Programmable Search Engine API key |
+| `GOOGLE_PSE_ENGINE_ID` | no | no | | Programmable Search Engine ID |
+| `WORKSPACE_MCP_LOG_LEVEL` | no | no | `INFO` | Log level |
+
+On the stdio path, OAuth needs a one-time interactive consent. Run
+`start_google_auth` once, or pre-seed `WORKSPACE_MCP_CREDENTIALS_DIR` with a
+token, or use a service account with domain-wide delegation.
+
+### Tools and annotation classes
+
+<details><summary>119 tools</summary>
+
+| Service | Tool | Title | Class |
+|---|---|---|---|
+| core | `start_google_auth` | Start Google Auth | create |
+| gappsscript | `generate_trigger_code` | Generate Trigger Code | read-only |
+| gappsscript | `get_script_activity` | Get Script Activity | read-only |
+| gappsscript | `get_script_project` | Get Script Project | read-only |
+| gappsscript | `get_script_version` | Get Script Version | read-only |
+| gappsscript | `list_script_deployments` | List Script Deployments | read-only |
+| gappsscript | `manage_deployment` | Manage Deployment | mutate (destructive, non-idempotent) |
+| gappsscript | `manage_script_content` | Manage Script Content | mutate (destructive, non-idempotent) |
+| gappsscript | `manage_script_project` | Manage Script Project | mutate (destructive, non-idempotent) |
+| gappsscript | `manage_script_trigger` | Manage Script Trigger | mutate (destructive, non-idempotent) |
+| gappsscript | `manage_script_version` | Manage Script Version | create |
+| gappsscript | `run_script_function` | Run Script Function | mutate (destructive, non-idempotent) |
+| gcalendar | `get_events` | Get Events | read-only |
+| gcalendar | `list_calendars` | List Calendars | read-only |
+| gcalendar | `manage_calendar` | Manage Calendar | mutate (destructive, non-idempotent) |
+| gcalendar | `manage_event` | Manage Event | mutate (destructive, non-idempotent) |
+| gcalendar | `manage_focus_time` | Manage Focus Time | mutate (destructive, non-idempotent) |
+| gcalendar | `manage_out_of_office` | Manage Out of Office | mutate (destructive, non-idempotent) |
+| gcalendar | `query_freebusy` | Query Freebusy | read-only |
+| gchat | `create_reaction` | Create Reaction | create |
+| gchat | `download_chat_attachment` | Download Chat Attachment | create |
+| gchat | `get_messages` | Get Messages | read-only |
+| gchat | `list_spaces` | List Spaces | read-only |
+| gchat | `search_messages` | Search Messages | read-only |
+| gchat | `send_message` | Send Message | mutate (destructive, non-idempotent) |
+| gcontacts | `get_contact` | Get Contact | read-only |
+| gcontacts | `get_contact_group` | Get Contact Group | read-only |
+| gcontacts | `list_contact_groups` | List Contact Groups | read-only |
+| gcontacts | `list_contacts` | List Contacts | read-only |
+| gcontacts | `manage_contact` | Manage Contact | mutate (destructive, non-idempotent) |
+| gcontacts | `manage_contact_group` | Manage Contact Group | mutate (destructive, non-idempotent) |
+| gcontacts | `manage_contacts_batch` | Manage Contacts Batch | mutate (destructive, non-idempotent) |
+| gcontacts | `search_contacts` | Search Contacts | read-only |
+| gdocs | `batch_update_doc` | Batch Update Doc | mutate (destructive, non-idempotent) |
+| gdocs | `create_doc` | Create Doc | create |
+| gdocs | `create_table_with_data` | Create Table with Data | create |
+| gdocs | `debug_table_structure` | Debug Table Structure | read-only |
+| gdocs | `export_doc_to_pdf` | Export Doc to PDF | create |
+| gdocs | `find_and_replace_doc` | Find and Replace Doc | mutate (destructive, non-idempotent) |
+| gdocs | `get_doc_as_markdown` | Get Doc as Markdown | read-only |
+| gdocs | `get_doc_content` | Get Doc Content | read-only |
+| gdocs | `insert_doc_elements` | Insert Doc Elements | create |
+| gdocs | `insert_doc_image` | Insert Doc Image | create |
+| gdocs | `inspect_doc_structure` | Inspect Doc Structure | read-only |
+| gdocs | `list_docs_in_folder` | List Docs in Folder | read-only |
+| gdocs | `list_document_comments` | List Document Comments | read-only |
+| gdocs | `manage_doc_tab` | Manage Doc Tab | mutate (destructive, non-idempotent) |
+| gdocs | `manage_document_comment` | Manage Document Comment | mutate (destructive, non-idempotent) |
+| gdocs | `modify_doc_text` | Modify Doc Text | mutate (destructive, non-idempotent) |
+| gdocs | `search_docs` | Search Docs | read-only |
+| gdocs | `update_doc_headers_footers` | Update Doc Headers Footers | mutate (destructive, non-idempotent) |
+| gdocs | `update_paragraph_style` | Update Paragraph Style | create |
+| gdrive | `check_drive_file_public_access` | Check Drive File Public Access | read-only |
+| gdrive | `copy_drive_file` | Copy Drive File | create |
+| gdrive | `create_drive_file` | Create Drive File | create |
+| gdrive | `create_drive_folder` | Create Drive Folder | create |
+| gdrive | `get_drive_file_content` | Get Drive File Content | read-only |
+| gdrive | `get_drive_file_download_url` | Get Drive File Download URL | read-only |
+| gdrive | `get_drive_file_permissions` | Get Drive File Permissions | read-only |
+| gdrive | `get_drive_shareable_link` | Get Drive Shareable Link | read-only |
+| gdrive | `import_to_google_doc` | Import to Google Doc | create |
+| gdrive | `import_to_google_sheets` | Import to Google Sheets | create |
+| gdrive | `import_to_google_slides` | Import to Google Slides | create |
+| gdrive | `list_drive_items` | List Drive Items | read-only |
+| gdrive | `manage_drive_access` | Manage Drive Access | mutate (destructive, non-idempotent) |
+| gdrive | `search_drive_files` | Search Drive Files | read-only |
+| gdrive | `set_drive_file_permissions` | Set Drive File Permissions | mutate (destructive, non-idempotent) |
+| gdrive | `update_drive_file` | Update Drive File | mutate (destructive, non-idempotent) |
+| gforms | `batch_update_form` | Batch Update Form | mutate (destructive, non-idempotent) |
+| gforms | `create_form` | Create Form | create |
+| gforms | `get_form` | Get Form | read-only |
+| gforms | `get_form_response` | Get Form Response | read-only |
+| gforms | `list_form_responses` | List Form Responses | read-only |
+| gforms | `set_publish_settings` | Set Publish Settings | create |
+| gmail | `batch_modify_gmail_message_labels` | Batch Modify Gmail Message Labels | mutate (destructive, non-idempotent) |
+| gmail | `draft_gmail_message` | Draft Gmail Message | create |
+| gmail | `get_gmail_attachment_content` | Get Gmail Attachment Content | create |
+| gmail | `get_gmail_message_content` | Get Gmail Message Content | read-only |
+| gmail | `get_gmail_messages_content_batch` | Get Gmail Messages Content Batch | read-only |
+| gmail | `get_gmail_thread_content` | Get Gmail Thread Content | read-only |
+| gmail | `get_gmail_threads_content_batch` | Get Gmail Threads Content Batch | read-only |
+| gmail | `list_gmail_filters` | List Gmail Filters | read-only |
+| gmail | `list_gmail_labels` | List Gmail Labels | read-only |
+| gmail | `manage_gmail_filter` | Manage Gmail Filter | mutate (destructive, non-idempotent) |
+| gmail | `manage_gmail_label` | Manage Gmail Label | mutate (destructive, non-idempotent) |
+| gmail | `modify_gmail_message_labels` | Modify Gmail Message Labels | mutate (destructive, non-idempotent) |
+| gmail | `search_gmail_messages` | Search Gmail Messages | read-only |
+| gmail | `send_gmail_message` | Send Gmail Message | mutate (destructive, non-idempotent) |
+| gsearch | `get_search_engine_info` | Get Search Engine Info | read-only |
+| gsearch | `search_custom` | Search Custom | read-only |
+| gsheets | `append_table_rows` | Append Table Rows | create |
+| gsheets | `create_sheet` | Create Sheet | create |
+| gsheets | `create_spreadsheet` | Create Spreadsheet | create |
+| gsheets | `format_sheet_range` | Format Sheet Range | mutate (destructive, non-idempotent) |
+| gsheets | `get_spreadsheet_info` | Get Spreadsheet Info | read-only |
+| gsheets | `list_sheet_tables` | List Sheet Tables | read-only |
+| gsheets | `list_spreadsheet_comments` | List Spreadsheet Comments | read-only |
+| gsheets | `list_spreadsheets` | List Spreadsheets | read-only |
+| gsheets | `manage_conditional_formatting` | Manage Conditional Formatting | mutate (destructive, non-idempotent) |
+| gsheets | `manage_named_range` | Manage Named Range | mutate (destructive, non-idempotent) |
+| gsheets | `manage_sheet_tab` | Manage Sheet Tab | mutate (destructive, non-idempotent) |
+| gsheets | `manage_spreadsheet_comment` | Manage Spreadsheet Comment | mutate (destructive, non-idempotent) |
+| gsheets | `modify_sheet_values` | Modify Sheet Values | mutate (destructive, non-idempotent) |
+| gsheets | `move_sheet_rows` | Move Sheet Rows | mutate (destructive, non-idempotent) |
+| gsheets | `read_sheet_values` | Read Sheet Values | read-only |
+| gsheets | `resize_sheet_dimensions` | Resize Sheet Dimensions | mutate (destructive, non-idempotent) |
+| gslides | `batch_update_presentation` | Batch Update Presentation | mutate (destructive, non-idempotent) |
+| gslides | `create_presentation` | Create Presentation | create |
+| gslides | `get_page` | Get Page | read-only |
+| gslides | `get_presentation` | Get Presentation | read-only |
+| gslides | `list_presentation_comments` | List Presentation Comments | read-only |
+| gslides | `manage_presentation_comment` | Manage Presentation Comment | mutate (destructive, non-idempotent) |
+| gslides | `render_page_to_image` | Render Page to Image | read-only |
+| gtasks | `get_task` | Get Task | read-only |
+| gtasks | `get_task_list` | Get Task List | read-only |
+| gtasks | `list_task_lists` | List Task Lists | read-only |
+| gtasks | `list_tasks` | List Tasks | read-only |
+| gtasks | `manage_task` | Manage Task | mutate (destructive, non-idempotent) |
+| gtasks | `manage_task_list` | Manage Task List | mutate (destructive, non-idempotent) |
+
+</details>
+
 ## What It Does
 
 Workspace MCP connects AI assistants to all twelve major Google Workspace services - 120+ tools behind a single MCP server, with OAuth 2.1 multi-user auth, three progressive tool tiers, read-only mode, a full CLI, and stateless container deployment. It runs locally over stdio for legacy clients and remotely over streamable HTTP with full implementation of the latest MCP spec.

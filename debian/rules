@@ -1,0 +1,34 @@
+#!/usr/bin/make -f
+
+PKG := mcp-server-googleoffice
+APPDIR := usr/share/$(PKG)
+DEB_VERSION := $(shell dpkg-parsechangelog -S Version)
+
+%:
+	dh $@ --with python3
+
+override_dh_auto_build:
+	# Pure-python app installed privately; nothing to build.
+
+override_dh_auto_install:
+	install -d debian/$(PKG)/$(APPDIR)
+	cp -a auth core gappsscript gcalendar gchat gcontacts gdocs gdrive \
+	      gforms gmail gsearch gsheets gslides gtasks main.py fastmcp_server.py \
+	      debian/$(PKG)/$(APPDIR)/
+	find debian/$(PKG)/$(APPDIR) -name __pycache__ -prune -exec rm -rf {} +
+	install -D -m 0755 debian/launcher debian/$(PKG)/usr/bin/$(PKG)
+	sed -i 's/@VERSION@/$(DEB_VERSION)/' debian/$(PKG)/usr/bin/$(PKG)
+
+override_dh_link:
+	dh_link -p$(PKG) usr/bin/$(PKG) usr/bin/workspace-mcp \
+	        usr/share/man/man1/$(PKG).1.gz usr/share/man/man1/workspace-mcp.1.gz
+	dh_link --remaining-packages
+
+override_dh_python3:
+	dh_python3 -p$(PKG) /$(APPDIR)
+
+override_dh_auto_test:
+	# Run post-install via debian/tests/control (autopkgtest).
+
+override_dh_auto_clean:
+	rm -rf build .pytest_cache

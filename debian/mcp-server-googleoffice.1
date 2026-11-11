@@ -1,0 +1,24 @@
+.TH MCP-SERVER-GOOGLEOFFICE 1 "November 2026" "mcp-server-googleoffice" "User Commands"
+.SH NAME
+mcp-server-googleoffice \- Model Context Protocol server for Google Workspace
+.SH SYNOPSIS
+.B mcp-server-googleoffice
+[\fB\-\-transport\fR \fIstdio|streamable-http\fR] [\fB\-\-read\-only\fR] [\fB\-\-single\-user\fR] [\fB\-\-tools\fR \fISERVICE\fR...] [\fB\-\-version\fR] [\fB\-h\fR]
+.SH DESCRIPTION
+Exposes Gmail, Drive, Calendar, Docs, Sheets, Slides, Forms, Tasks, Contacts,
+Chat, Apps Script and Programmable Search as MCP tools. The default transport
+is stdio. Run with \fB\-\-help\fR for all options.
+.SH ENVIRONMENT
+.TP
+.B GOOGLE_OAUTH_CLIENT_ID, GOOGLE_OAUTH_CLIENT_SECRET
+OAuth 2.0 client credentials (secret).
+.TP
+.B WORKSPACE_MCP_READ_ONLY
+When true, request only read-only scopes and register only read-only tools.
+.TP
+.B MCP_SINGLE_USER_MODE
+When 1, use any stored credentials without session mapping.
+.PP
+The full list is in /usr/share/mcp-server-googleoffice/server.json.
+.SH SEE ALSO
+.BR mcprack (1)

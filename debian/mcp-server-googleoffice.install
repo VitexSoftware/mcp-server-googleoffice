@@ -1,0 +1,2 @@
+debian/io.github.vitexsoftware.mcp_server_googleoffice.metainfo.xml usr/share/metainfo/
+debian/server.json usr/share/mcp-server-googleoffice/

@@ -44,10 +44,14 @@ async def _copy(**kwargs):
     "kwargs, expected", [({"copy_comments": True}, True), ({}, False)]
 )
 async def test_copy_comments_reaches_files_copy(kwargs, expected):
-    assert (await _copy(**kwargs))["copyComments"] is expected
+    assert (await _copy(**kwargs)).get("copyComments", False) is expected
 
 
 def test_drive_discovery_accepts_copy_comments():
     service = build("drive", "v3", developerKey="test", static_discovery=True)
+    try:
+        service.files().copy(fileId="file-1", body={}, copyComments=True)
+    except TypeError:
+        pytest.skip("google-api-python-client discovery predates copyComments")
     request = service.files().copy(fileId="file-1", body={}, copyComments=True)
     assert "copyComments=true" in request.uri

@@ -1,0 +1,32 @@
+{
+  "name": "io.github.vitexsoftware/mcp-server-googleoffice",
+  "description": "Google Workspace MCP server (Gmail, Drive, Calendar, Docs, Sheets, Slides, Forms, Tasks, Contacts, Chat).",
+  "version": "2.4.1",
+  "packages": [
+    {
+      "registryType": "deb",
+      "identifier": "mcp-server-googleoffice",
+      "transport": {"type": "stdio"},
+      "environmentVariables": [
+        {"name": "GOOGLE_OAUTH_CLIENT_ID", "description": "OAuth 2.0 client ID of a Google Cloud 'Desktop app' or 'Web application' client", "isRequired": true, "isSecret": true},
+        {"name": "GOOGLE_OAUTH_CLIENT_SECRET", "description": "OAuth 2.0 client secret belonging to GOOGLE_OAUTH_CLIENT_ID", "isRequired": true, "isSecret": true},
+        {"name": "USER_GOOGLE_EMAIL", "description": "Default Google account e-mail used when a tool call does not name one", "isRequired": false, "isSecret": false},
+        {"name": "WORKSPACE_MCP_CREDENTIALS_DIR", "description": "Directory holding the stored OAuth tokens (one JSON per account); use a per-user path", "isRequired": false, "isSecret": false},
+        {"name": "GOOGLE_SERVICE_ACCOUNT_KEY_JSON", "description": "Service-account key (JSON) for domain-wide delegation instead of OAuth user tokens", "isRequired": false, "isSecret": true},
+        {"name": "GOOGLE_SERVICE_ACCOUNT_KEY_FILE", "description": "Path to a service-account key file for domain-wide delegation", "isRequired": false, "isSecret": false},
+        {"name": "DWD_ALLOWED_DOMAINS", "description": "Comma-separated domains the service account may impersonate users in", "isRequired": false, "isSecret": false},
+        {"name": "MCP_SINGLE_USER_MODE", "description": "1 = use any stored credentials from the credentials directory without session mapping (recommended under mcprack)", "isRequired": false, "isSecret": false, "default": "1", "choices": ["0", "1"]},
+        {"name": "WORKSPACE_MCP_READ_ONLY", "description": "Request only read-only scopes and expose only read-only tools", "isRequired": false, "isSecret": false, "default": "true", "choices": ["true", "false"]},
+        {"name": "WORKSPACE_MCP_TRANSPORT", "description": "Transport the server speaks", "isRequired": false, "isSecret": false, "default": "stdio", "choices": ["stdio", "streamable-http"]},
+        {"name": "WORKSPACE_MCP_TOOLS", "description": "Comma-separated services to load (gmail,drive,calendar,docs,sheets,slides,forms,tasks,contacts,chat,search,appscript)", "isRequired": false, "isSecret": false},
+        {"name": "WORKSPACE_MCP_TOOL_TIER", "description": "Tool tier to load", "isRequired": false, "isSecret": false, "choices": ["core", "extended", "complete"]},
+        {"name": "WORKSPACE_MCP_PERMISSIONS", "description": "Granular per-service permissions, e.g. 'gmail:organize drive:readonly' (exclusive with READ_ONLY/TOOLS)", "isRequired": false, "isSecret": false},
+        {"name": "WORKSPACE_MCP_DISABLED_TOOLS", "description": "Comma-separated tool names to block", "isRequired": false, "isSecret": false},
+        {"name": "WORKSPACE_ATTACHMENT_DIR", "description": "Directory where downloaded attachments are stored", "isRequired": false, "isSecret": false},
+        {"name": "GOOGLE_PSE_API_KEY", "description": "API key for Programmable Search Engine tools", "isRequired": false, "isSecret": true},
+        {"name": "GOOGLE_PSE_ENGINE_ID", "description": "Programmable Search Engine ID", "isRequired": false, "isSecret": false},
+        {"name": "WORKSPACE_MCP_LOG_LEVEL", "description": "Log level", "isRequired": false, "isSecret": false, "choices": ["DEBUG", "INFO", "WARNING", "ERROR"]}
+      ]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "identifier": "vitexsoftware-mcp-server-googleoffice",
+  "name": "Google Workspace MCP Server",
+  "description": "MCP server for Google Workspace: Gmail, Drive, Calendar, Docs, Sheets, Slides, Forms, Tasks, Contacts, Chat and Apps Script. Fork of taylorwilsdon/google_workspace_mcp.",
+  "category": "productivity",
+  "homepage": "https://github.com/VitexSoftware/mcp-server-googleoffice",
+  "author": "CyberVitexus",
+  "authorUrl": "https://github.com/VitexSoftware",
+  "prompts": [],
+  "tags": ["mcp", "google", "workspace", "gmail", "drive", "calendar", "docs", "sheets"],
+  "version": "2.4.1"
+}

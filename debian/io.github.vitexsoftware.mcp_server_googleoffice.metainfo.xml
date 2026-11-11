@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="console-application">
+  <id>io.github.vitexsoftware.mcp_server_googleoffice</id>
+  <metadata_license>FSFAP</metadata_license>
+  <project_license>MIT</project_license>
+  <name>Google Workspace MCP Server</name>
+  <summary>Use Gmail, Drive, Calendar, Docs and Sheets from an MCP client</summary>
+  <description>
+    <p>
+      Model Context Protocol server for Google Workspace: Gmail, Drive,
+      Calendar, Docs, Sheets, Slides, Forms, Tasks, Contacts, Chat and Apps
+      Script. Supports a read-only mode. Fork of
+      taylorwilsdon/google_workspace_mcp.
+    </p>
+  </description>
+  <provides>
+    <binary>mcp-server-googleoffice</binary>
+  </provides>
+  <url type="homepage">https://github.com/VitexSoftware/mcp-server-googleoffice</url>
+  <developer id="cz.vitexsoftware">
+    <name>Vítězslav Dvořák</name>
+  </developer>
+  <releases>
+    <release version="2.4.1" date="2026-11-11"/>
+  </releases>
+</component>

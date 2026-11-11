@@ -15,6 +15,17 @@ from auth.scopes import is_read_only_mode, get_all_read_only_scopes
 
 logger = logging.getLogger(__name__)
 
+# Tools kept in read-only mode even though they are not annotated read-only.
+READ_ONLY_MODE_ALWAYS_ALLOWED = frozenset({"start_google_auth"})
+
+
+def _annotation_read_only(annotations) -> Optional[bool]:
+    """Return the read-only hint (mcp SDK 1.x camelCase or 2.x snake_case)."""
+    value = getattr(annotations, "read_only_hint", None)
+    if value is None:
+        value = getattr(annotations, "readOnlyHint", None)
+    return value
+
 # Global registry of enabled tools
 _enabled_tools: Optional[Set[str]] = None
 
@@ -193,6 +204,22 @@ def filter_server_tools(server) -> int:
                         f"Read-only mode: Disabling tool '{tool_name}' (requires write scopes: {required_scopes})"
                     )
                     tools_to_remove.add(tool_name)
+                    continue
+
+            # Also drop tools whose own annotations say they are not read-only
+            # (e.g. tools writing attachments to local disk with read scopes).
+            # start_google_auth stays: without it no credentials can be obtained.
+            annotations = getattr(tool_obj, "annotations", None)
+            if (
+                tool_name not in READ_ONLY_MODE_ALWAYS_ALLOWED
+                and annotations is not None
+                and _annotation_read_only(annotations) is not True
+            ):
+                logger.debug(
+                    "Read-only mode: Disabling tool '%s' (not annotated read-only)",
+                    tool_name,
+                )
+                tools_to_remove.add(tool_name)
 
     # 4. Granular permissions filtering
     # No scope hierarchy expansion here — permission levels are already cumulative

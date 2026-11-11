@@ -537,6 +537,13 @@ def main():
 
     # Parse command line arguments
     parser = argparse.ArgumentParser(description="Google Workspace MCP Server")
+    try:
+        _pkg_version = metadata.version("workspace-mcp")
+    except metadata.PackageNotFoundError:
+        _pkg_version = os.getenv("MCP_SERVER_GOOGLEOFFICE_VERSION", "dev")
+    parser.add_argument(
+        "--version", action="version", version=f"mcp-server-googleoffice {_pkg_version}"
+    )
     parser.add_argument(
         "--single-user",
         action="store_true",
@@ -732,7 +739,7 @@ def main():
     try:
         version = metadata.version("workspace-mcp")
     except metadata.PackageNotFoundError:
-        version = "dev"
+        version = os.getenv("MCP_SERVER_GOOGLEOFFICE_VERSION", "dev")
 
     mode = "single-user" if args.single_user else "multi-user"
     pyver = sys.version.split()[0]

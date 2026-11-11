@@ -1,0 +1,6 @@
+#!/bin/sh
+# Launcher for the privately installed Google Workspace MCP server.
+# stdio is the default transport (WORKSPACE_MCP_TRANSPORT overrides it).
+MCP_SERVER_GOOGLEOFFICE_VERSION="${MCP_SERVER_GOOGLEOFFICE_VERSION:-@VERSION@}"
+export MCP_SERVER_GOOGLEOFFICE_VERSION
+exec /usr/bin/python3 /usr/share/mcp-server-googleoffice/main.py "$@"

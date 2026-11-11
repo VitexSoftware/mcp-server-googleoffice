@@ -1,0 +1,15 @@
+mcp-server-googleoffice (2.4.1-1) unstable; urgency=medium
+
+  * Initial Debian package; fork of taylorwilsdon/google_workspace_mcp 2.4.1
+    (upstream base: tag v2.4.1 + 13 commits, b5d4323b, synced 2026-11-11).
+  * Install privately under /usr/share/mcp-server-googleoffice with an
+    /usr/bin/mcp-server-googleoffice launcher; keep workspace-mcp as a
+    compatibility symlink.
+  * Read-only mode (WORKSPACE_MCP_READ_ONLY) also drops tools not annotated
+    read-only (start_google_auth excepted).
+  * Add --version.
+  * copy_drive_file sends copyComments only when requested (trixie's
+    python3-googleapi 2.166 discovery predates the parameter).
+  * mcprack companion package registers the server in read-only mode.
+
+ -- Vítězslav Dvořák <info@vitexsoftware.cz>  Wed, 11 Nov 2026 15:00:00 +0100

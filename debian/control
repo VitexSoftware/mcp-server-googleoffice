@@ -1,0 +1,50 @@
+Source: mcp-server-googleoffice
+Section: python
+Priority: optional
+Maintainer: "Vítězslav Dvořák" <info@vitexsoftware.cz>
+Build-Depends: debhelper-compat (= 13), dh-python, python3-all
+Standards-Version: 4.6.2
+Homepage: https://github.com/VitexSoftware/mcp-server-googleoffice
+Vcs-Git: https://github.com/VitexSoftware/mcp-server-googleoffice.git
+Vcs-Browser: https://github.com/VitexSoftware/mcp-server-googleoffice
+Rules-Requires-Root: no
+
+Package: mcp-server-googleoffice
+Architecture: all
+Depends: ${misc:Depends}, ${python3:Depends},
+ python3-fastmcp (>= 4.1.4),
+ python3-googleapi,
+ python3-google-auth,
+ python3-google-auth-oauthlib,
+ python3-google-auth-httplib2,
+ python3-httpx,
+ python3-py-key-value-aio,
+ python3-jwt,
+ python3-dotenv,
+ python3-yaml,
+ python3-cryptography,
+ python3-defusedxml,
+ python3-email-validator,
+ python3-pypdf,
+ python3-tz,
+ tzdata,
+ python3-markdown-it,
+ python3-fastapi,
+ python3-authlib,
+Provides: workspace-mcp
+Description: stdio MCP server for Google Workspace
+ Model Context Protocol (MCP) server for Google Workspace: Gmail, Drive,
+ Calendar, Docs, Sheets, Slides, Forms, Tasks, Contacts, Chat, Apps Script
+ and Programmable Search. Set WORKSPACE_MCP_READ_ONLY=true to request only
+ read-only scopes and expose only read-only tools.
+ Fork of taylorwilsdon/google_workspace_mcp.
+
+Package: mcprack-mcp-server-googleoffice
+Architecture: all
+Depends: ${misc:Depends},
+ mcprack (>= 1.6.0),
+ mcp-server-googleoffice (= ${binary:Version}),
+Description: Registers Google Workspace MCP server into mcprack catalog
+ Companion package for mcp-server-googleoffice. Installing it registers
+ the mcp-server-googleoffice binary as an available MCP server in the
+ local mcprack instance; removing it unregisters it again.

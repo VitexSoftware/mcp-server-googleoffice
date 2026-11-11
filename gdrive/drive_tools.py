@@ -2895,16 +2895,18 @@ async def copy_drive_file(
     if resolved_folder_id != "root":
         copy_body["parents"] = [resolved_folder_id]
 
+    copy_kwargs = {
+        "fileId": file_id,
+        "body": copy_body,
+        "supportsAllDrives": True,
+        "fields": "id, name, webViewLink, mimeType, parents",
+    }
+    # Older google-api-python-client discovery documents (Debian trixie ships
+    # 2.166) do not know copyComments; only send it when actually requested.
+    if copy_comments:
+        copy_kwargs["copyComments"] = True
     copied_file = await asyncio.to_thread(
-        service.files()
-        .copy(
-            fileId=file_id,
-            body=copy_body,
-            supportsAllDrives=True,
-            copyComments=copy_comments,
-            fields="id, name, webViewLink, mimeType, parents",
-        )
-        .execute
+        service.files().copy(**copy_kwargs).execute
     )
 
     output_parts = [
